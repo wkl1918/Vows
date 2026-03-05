@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+
+# Runtime data
+backend/storage/outputs/
+backend/storage/uploads/
+backend/storage/temp/
+output/
+temp/
+logs/
+*.log
+
+# Models and checkpoints (large files / license-sensitive)
+backend/models/
+models/
+checkpoints/
+**/hf_cache/
+*.pt
+*.pth
+*.safetensors
+*.bin
+
+# Media artifacts
+*.mp4
+*.mkv
+*.avi
+*.mov
+*.wav
+*.mp3
+*.flac
+
+# Bundled binaries (recommend users install ffmpeg locally)
+tools/ffmpeg/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Temp scripts
+fix*.py
+test_file*.py

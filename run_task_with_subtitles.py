@@ -6,7 +6,8 @@ from pathlib import Path
 
 def main():
     if len(sys.argv) < 2:
-        print("用法: python run_task_with_subtitles.py <视频文件路径>")
+        print("用法: python run_task_with_subtitles.py <视频文件路径> [目标语言代码]")
+        print("示例: python run_task_with_subtitles.py \"D:/demo.mp4\" zh")
         return
 
     video_path = Path(sys.argv[1]).resolve()
@@ -14,8 +15,9 @@ def main():
         print(f"❌ 找不到文件: {video_path}")
         return
 
-    print(f"🔄 正在上传视频: {video_path.name}...")
-    url = "http://127.0.0.1:8000/api/v1/tasks/upload?target_language=zh"
+    target_language = (sys.argv[2] if len(sys.argv) >= 3 else "zh").strip() or "zh"
+    print(f"🔄 正在上传视频: {video_path.name} (目标语言: {target_language})...")
+    url = f"http://127.0.0.1:8000/api/v1/tasks/upload?target_language={target_language}"
     
     try:
         with open(video_path, 'rb') as f:
@@ -85,7 +87,8 @@ def main():
         model = WhisperModel(model_source, device=asr_device, compute_type=compute_type)
         
         print(f">> 正在听写最新的视频: {final_video.name}")
-        segments, info = model.transcribe(str(final_video), language="zh", vad_filter=True, beam_size=5)
+        # Subtitles follow dubbing target language to keep display and audio consistent.
+        segments, info = model.transcribe(str(final_video), language=target_language, vad_filter=True, beam_size=5)
 
         def ts(t):
             h = int(t // 3600)

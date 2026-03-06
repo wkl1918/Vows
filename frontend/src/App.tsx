@@ -14,9 +14,68 @@ interface TaskResponse {
     message: string;
 }
 
+interface LanguageOption {
+    code: string;
+    label: string;
+}
+
+const LANGUAGE_OPTIONS: LanguageOption[] = [
+    { code: 'zh', label: 'zh - 中文' },
+    { code: 'en', label: 'en - 英文' },
+    { code: 'ja', label: 'ja - 日文' },
+    { code: 'ko', label: 'ko - 韩文' },
+    { code: 'es', label: 'es - 西班牙语' },
+    { code: 'fr', label: 'fr - 法语' },
+    { code: 'de', label: 'de - 德语' },
+    { code: 'ru', label: 'ru - 俄语' },
+    { code: 'it', label: 'it - 意大利语' },
+    { code: 'pt', label: 'pt - 葡萄牙语' },
+    { code: 'ar', label: 'ar - 阿拉伯语' },
+    { code: 'hi', label: 'hi - 印地语' },
+    { code: 'th', label: 'th - 泰语' },
+    { code: 'vi', label: 'vi - 越南语' },
+    { code: 'tr', label: 'tr - 土耳其语' },
+    { code: 'nl', label: 'nl - 荷兰语' },
+    { code: 'pl', label: 'pl - 波兰语' },
+    { code: 'id', label: 'id - 印尼语' },
+    { code: 'ms', label: 'ms - 马来语' },
+    { code: 'fa', label: 'fa - 波斯语' },
+    { code: 'uk', label: 'uk - 乌克兰语' },
+    { code: 'cs', label: 'cs - 捷克语' },
+    { code: 'sk', label: 'sk - 斯洛伐克语' },
+    { code: 'hu', label: 'hu - 匈牙利语' },
+    { code: 'ro', label: 'ro - 罗马尼亚语' },
+    { code: 'bg', label: 'bg - 保加利亚语' },
+    { code: 'hr', label: 'hr - 克罗地亚语' },
+    { code: 'sl', label: 'sl - 斯洛文尼亚语' },
+    { code: 'sr', label: 'sr - 塞尔维亚语' },
+    { code: 'da', label: 'da - 丹麦语' },
+    { code: 'sv', label: 'sv - 瑞典语' },
+    { code: 'no', label: 'no - 挪威语' },
+    { code: 'fi', label: 'fi - 芬兰语' },
+    { code: 'et', label: 'et - 爱沙尼亚语' },
+    { code: 'lv', label: 'lv - 拉脱维亚语' },
+    { code: 'lt', label: 'lt - 立陶宛语' },
+    { code: 'el', label: 'el - 希腊语' },
+    { code: 'he', label: 'he - 希伯来语' },
+    { code: 'bn', label: 'bn - 孟加拉语' },
+    { code: 'ta', label: 'ta - 泰米尔语' },
+    { code: 'te', label: 'te - 泰卢固语' },
+    { code: 'mr', label: 'mr - 马拉地语' },
+    { code: 'gu', label: 'gu - 古吉拉特语' },
+    { code: 'kn', label: 'kn - 卡纳达语' },
+    { code: 'ml', label: 'ml - 马拉雅拉姆语' },
+    { code: 'ur', label: 'ur - 乌尔都语' },
+    { code: 'sw', label: 'sw - 斯瓦希里语' },
+    { code: 'af', label: 'af - 南非语' },
+    { code: 'fil', label: 'fil - 菲律宾语' },
+    { code: 'ca', label: 'ca - 加泰罗尼亚语' },
+];
+
 function App() {
     const [task, setTask] = useState<TaskResponse | null>(null);
     const [uploading, setUploading] = useState(false);
+    const [targetLanguage, setTargetLanguage] = useState<string>('zh');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,11 +85,10 @@ function App() {
         setUploading(true);
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('target_language', 'zh'); // Default to Chinese
 
         try {
-            console.log(`Uploading to ${API_URL}/upload...`);
-            const res = await axios.post(`${API_URL}/upload`, formData, {
+            console.log(`Uploading to ${API_URL}/upload?target_language=${targetLanguage}...`);
+            const res = await axios.post(`${API_URL}/upload?target_language=${targetLanguage}`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             console.log("Upload success:", res.data);
@@ -75,30 +133,48 @@ function App() {
             <main className="max-w-xl mx-auto">
                 {/* Upload Zone */}
                 {!task && (
-                    <div 
-                        className={clsx(
-                            "border-2 border-dashed rounded-xl p-12 text-center transition-colors cursor-pointer",
-                            uploading ? "border-indigo-500 bg-indigo-500/10" : "border-neutral-700 hover:border-indigo-500 hover:bg-neutral-800"
-                        )}
-                        onClick={() => fileInputRef.current?.click()}
-                    >
-                        <input 
-                            type="file" 
-                            className="hidden" 
-                            ref={fileInputRef} 
-                            onChange={handleFileUpload}
-                            accept="video/*,audio/*"
-                        />
-                        <div className="flex flex-col items-center gap-4">
-                            {uploading ? (
-                                <Loader2 className="w-12 h-12 text-indigo-500 animate-spin" />
-                            ) : (
-                                <Upload className="w-12 h-12 text-neutral-500" />
+                    <div className="space-y-4">
+                        <div className="bg-neutral-800 border border-neutral-700 rounded-xl p-4">
+                            <label className="block text-sm text-neutral-300 mb-2">目标语言 (50选1)</label>
+                            <select
+                                className="w-full rounded-lg bg-neutral-900 border border-neutral-700 px-3 py-2 text-sm focus:outline-none focus:border-indigo-500"
+                                value={targetLanguage}
+                                onChange={(e) => setTargetLanguage(e.target.value)}
+                                disabled={uploading}
+                            >
+                                {LANGUAGE_OPTIONS.map((option) => (
+                                    <option key={option.code} value={option.code}>
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div
+                            className={clsx(
+                                "border-2 border-dashed rounded-xl p-12 text-center transition-colors cursor-pointer",
+                                uploading ? "border-indigo-500 bg-indigo-500/10" : "border-neutral-700 hover:border-indigo-500 hover:bg-neutral-800"
                             )}
-                            <div className="text-lg font-medium">
-                                {uploading ? "Uploading..." : "Click to Upload Video/Audio"}
+                            onClick={() => fileInputRef.current?.click()}
+                        >
+                            <input
+                                type="file"
+                                className="hidden"
+                                ref={fileInputRef}
+                                onChange={handleFileUpload}
+                                accept="video/*,audio/*"
+                            />
+                            <div className="flex flex-col items-center gap-4">
+                                {uploading ? (
+                                    <Loader2 className="w-12 h-12 text-indigo-500 animate-spin" />
+                                ) : (
+                                    <Upload className="w-12 h-12 text-neutral-500" />
+                                )}
+                                <div className="text-lg font-medium">
+                                    {uploading ? "Uploading..." : "Click to Upload Video/Audio"}
+                                </div>
+                                <p className="text-neutral-500 text-sm">Supports MP4, WAV, MP3</p>
                             </div>
-                            <p className="text-neutral-500 text-sm">Supports MP4, WAV, MP3</p>
                         </div>
                     </div>
                 )}

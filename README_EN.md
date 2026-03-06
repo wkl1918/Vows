@@ -30,11 +30,12 @@ Audio Extraction -> Vocal Separation -> ASR + Speaker Diarization -> LLM Transla
 ### Case 1: TED (with hard subtitles)
 - Source video:
 
-https://github.com/user-attachments/assets/8d920bf4-ea87-440a-baf8-c65e18105bf4
+https://github.com/user-attachments/assets/6d045aa6-6eec-4c29-8a7f-918809bea939
 
 - Output video:
 
-https://github.com/user-attachments/assets/665bf335-96be-46d4-a835-c19de7a6db3d
+https://github.com/user-attachments/assets/ead60688-c0de-4ee9-983d-e3d9af182b16
+
 
 Comparison highlights:
 1. Keeps original pacing and timeline, with segment-aligned dubbing
@@ -44,11 +45,11 @@ Comparison highlights:
 ### Case 2: Trump (without subtitles)
 - Source video:
 
-https://github.com/user-attachments/assets/b24ca83f-a9ba-47e3-bb3f-1fb0e4d349ca
+https://github.com/user-attachments/assets/b396c851-d8c8-44a2-ba6f-4cba41926812
 
 - Output video:
 
-https://github.com/user-attachments/assets/d9a40745-507d-4ea5-b758-3cc34a20227f
+https://github.com/user-attachments/assets/7b0c1728-c79d-4841-9d07-616031f63096
 
 Comparison highlights:
 1. Outputs dubbed video without subtitle burn-in
